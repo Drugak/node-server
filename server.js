@@ -5,20 +5,23 @@
 "use strict"
 
 var http =require('http'),
-	url = require('url'),
-	server = new http.Server(function(req,res) {
-		console.log(req.method, req.url);
+	fs = require('fs');
 
-		var urlParsed = url.parse(req.url, true);
-		console.log(urlParsed);
+http.createServer(function(req, res) {
+	var info;
 
-		if(urlParsed.pathname == '/echo' && urlParsed.query.msg){
-			res.end(urlParsed.query.msg);
-		} else {
-			res.statusCode = 404;
-			res.end('Page not found');
-		}
+	if (req.url == '/test') {
+		fs.readFile('index.html', function(err, info){
+			if (err) {
+				console.log(err);
+				res.statusCode = 500;
+				res.end("На сервере произошла ошибка");
+				return;
+			}
 
-	});
-
-server.listen(1337, '127.0.0.1');
+			res.end(info);
+		})
+	} else {
+		res.end('404');
+	}
+}).listen(1337, '127.0.0.1');
