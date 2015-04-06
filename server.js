@@ -4,24 +4,17 @@
 
 "use strict"
 
-var http =require('http'),
-	fs = require('fs');
+var http =require('http');
 
-http.createServer(function(req, res) {
-	var info;
+var server = new http.Server(function(req, res) {}).listen(3000);
 
-	if (req.url == '/test') {
-		fs.readFile('index.html', function(err, info){
-			if (err) {
-				console.log(err);
-				res.statusCode = 500;
-				res.end("На сервере произошла ошибка");
-				return;
-			}
+setTimeout(function(){
+    server.close();
+}, 2500);
 
-			res.end(info);
-		})
-	} else {
-		res.end('404');
-	}
-}).listen(1337, '127.0.0.1');
+
+var timer = setInterval(function(){
+    console.log(process.memoryUsage());
+}, 1000);
+
+timer.unref();
